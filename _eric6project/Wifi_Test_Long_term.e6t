@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-6.0.dtd">
 <!-- eric6 tasks file for project Wifi_Test_Long_term -->
-<!-- Saved: 2018-06-25, 01:12:05 -->
+<!-- Saved: 2018-06-25, 17:37:26 -->
 <Tasks version="6.0">
   <ProjectScanFilter></ProjectScanFilter>
-  <Task priority="1" completed="False" type="1" uid="{89691f8e-b832-4cc6-808d-d84d8dc37987}">
+  <Task priority="1" completed="False" type="1" uid="{369ad1c7-77ca-41d8-93c4-7c9866f040b9}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2018-06-25, 01:12:04</Created>
+    <Created>2018-06-25, 17:18:58</Created>
     <Resource>
       <Filename>Wifi_Test_Long_term.py</Filename>
-      <Linenumber>81</Linenumber>
+      <Linenumber>97</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" type="1" uid="{d6105fd8-f4ac-4eed-903b-e7378221c6b6}">
+  <Task priority="1" completed="False" type="1" uid="{438733f8-78f1-4ab6-91cf-b4a40d6c6963}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2018-06-25, 01:12:04</Created>
+    <Created>2018-06-25, 17:18:58</Created>
     <Resource>
       <Filename>Wifi_Test_Long_term.py</Filename>
-      <Linenumber>101</Linenumber>
+      <Linenumber>123</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" type="1" uid="{49f8fb87-a1f6-4269-86e8-722bf1b73dca}">
+    <Summary>TODO: not implemented yet</Summary>
+    <Description></Description>
+    <Created>2018-06-25, 17:18:58</Created>
+    <Resource>
+      <Filename>Wifi_Test_Long_term.py</Filename>
+      <Linenumber>140</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" type="1" uid="{33f94450-df71-40ec-8b34-65f67027847d}">
+    <Summary>TODO: not implemented yet</Summary>
+    <Description></Description>
+    <Created>2018-06-25, 17:18:58</Created>
+    <Resource>
+      <Filename>Wifi_Test_Long_term.py</Filename>
+      <Linenumber>156</Linenumber>
     </Resource>
   </Task>
 </Tasks>

@@ -30,6 +30,8 @@ class mainWindow(QMainWindow, Ui_mainWindow):
         super(mainWindow, self).__init__(parent)
         self.setupUi(self)
         self._translate = QtCore.QCoreApplication.translate
+        self.lanipState = False
+        self.wanipState = False
 
         self.updateSSIDList()
 
@@ -43,7 +45,12 @@ class mainWindow(QMainWindow, Ui_mainWindow):
         ssidCount = len(self.ssidList)
         for i in range(ssidCount):
             item = QtWidgets.QListWidgetItem()
-            item.setText(self._translate("mainWindow", self.ssidList[i][:-1]))
+            ssid = self.ssidList[i]
+            if ssid == "\n" or ssid == "":
+                continue
+            if ssid[-1] == "\n":
+                ssid = ssid[:-1]
+            item.setText(self._translate("mainWindow", ssid))
             self.listWidget_ssid.addItem(item)
 
 
@@ -54,6 +61,24 @@ class mainWindow(QMainWindow, Ui_mainWindow):
         """
         Slot documentation goes here.
         """
+        polltime = self.spinBox_polltime.text()
+        pingtime = self.spinBox_pingtime.text()
+        lanip = ""
+        wanip = ""
+        if self.checkBox_lanip.checkState():
+            lanip = self.lineEdit_lanip.text()
+        if self.checkBox_wanip.checkState():
+            wanip = self.lineEdit_wanip.text()
+        print("lanip:", lanip)
+        print("wanip:", wanip)
+
+
+        self.wifiTestTh = WifiTestThread(self.ssidList, polltime, pingtime, lanip, wanip)
+        self.wifiTestTh.sign_textBrowser.connect(self.setTextBrowser)
+        self.textBrowser.clear()
+
+        self.wifiTestTh.start()
+
         self.changeWidgetState(True)
     
     @pyqtSlot()
@@ -61,16 +86,7 @@ class mainWindow(QMainWindow, Ui_mainWindow):
         """
         Slot documentation goes here.
         """
-        polltime = self.spinBox_polltime.text()
-        pingtime = self.spinBox_pingtime.text()
-        lanip = self.lineEdit_lanip.text()
-        wanip = self.lineEdit_wanip.text()
-
-
-        self.wifiTestTh = WifiTestThread(self.ssid, polltime, pingtime, lanip, wanip)
-        self.wifiTestTh.start()
-        self.wifiTestTh.sign_textBrowser.connect(self.setTextBrowser)
-
+        self.wifiTestTh.stop()
         self.changeWidgetState(False)
 
     @pyqtSlot()
@@ -81,14 +97,20 @@ class mainWindow(QMainWindow, Ui_mainWindow):
         # TODO: not implemented yet
         self.updateSSIDList()
 
-    def changeWidgetState(self, check):
-        self.pushButton_stop.setEnabled(check)
-        self.spinBox_polltime.setEnabled(not check)
-        self.spinBox_pingtime.setEnabled(not check)
-        self.lineEdit_lanip.setEnabled(not check)
-        self.lineEdit_wanip.setEnabled(not check)
-        self.pushButton_start.setEnabled(not check)
-        self.pushButton_update.setEnabled(not check)
+    def changeWidgetState(self, checked):
+        self.pushButton_stop.setEnabled(checked)
+        self.spinBox_polltime.setEnabled(not checked)
+        self.spinBox_pingtime.setEnabled(not checked)
+        self.pushButton_start.setEnabled(not checked)
+        self.pushButton_update.setEnabled(not checked)
+        self.checkBox_lanip.setEnabled(not checked)
+        self.checkBox_wanip.setEnabled(not checked)
+        if checked:
+            self.lineEdit_lanip.setEnabled(not checked)
+            self.lineEdit_wanip.setEnabled(not checked)
+        else:
+            self.lineEdit_lanip.setEnabled(self.lanipState)
+            self.lineEdit_wanip.setEnabled(self.wanipState)
 
     def setTextBrowser(self, check):
         self.textBrowser.append(check)
@@ -106,6 +128,38 @@ class mainWindow(QMainWindow, Ui_mainWindow):
         f = open(dir[0], "w+")
         f.write(log)
         f.close()
+    
+    @pyqtSlot(bool)
+    def on_checkBox_lanip_clicked(self, checked):
+        """
+        Slot documentation goes here.
+        
+        @param checked DESCRIPTION
+        @type bool
+        """
+        # TODO: not implemented yet
+        print(checked)
+
+        self.lineEdit_lanip.setEnabled(checked)
+        self.lanipState = checked
+        # if not checked:
+        #     self.lineEdit_lanip.clear()
+    
+    @pyqtSlot(bool)
+    def on_checkBox_wanip_clicked(self, checked):
+        """
+        Slot documentation goes here.
+        
+        @param checked DESCRIPTION
+        @type bool
+        """
+        # TODO: not implemented yet
+        print(checked)
+
+        self.lineEdit_wanip.setEnabled(checked)
+        self.wanipState = checked
+        # if not checked:
+        #     self.lineEdit_wanip.clear()
 
 
 
@@ -124,38 +178,63 @@ class WifiTestThread(QThread):
         self.key = "96123123"
 
 
-        wifi = pywifi.PyWiFi()
-        self.wifiInt = wifi.interfaces()
-        self.iface.disconnect()
-        time.sleep(1)
-        assert self.iface.status() in \
-               [pywifi.const.IFACE_DISCONNECTED, pywifi.const.IFACE_INACTIVE]
 
     def run(self):
+        self.sign_textBrowser.emit("WIFI测试开始：")
+
+        wifi = pywifi.PyWiFi()
+        self.wifiInt = wifi.interfaces()[0]
+        self.wifiInt.disconnect()
+        time.sleep(1)
+        assert self.wifiInt.status() in \
+               [pywifi.const.IFACE_DISCONNECTED, pywifi.const.IFACE_INACTIVE]
+
         now = time.time()
         count = 0
 
         while not self.stopBool:
-            if time.time() >= now + self.polltime*60*count:
+            if time.time() >= now + int(self.polltime)*60*count:
                 for ssid in self.ssidList:
-                    if not self.stopBool:
-                        check = self.test_connect(ssid, self.key)
-                        logtime = time.strftime("%Y%s%d%H:%M:%S: ", time.localtime())
-                        if check:
-                            self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接成功")
-                        else:
-                            self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接失败")
-
-
-                    else:
+                    if self.stopBool:
                         break
+                    print("开始连接SSID：" + ssid)
+                    check = self.test_connect(ssid, self.key)
+                    logtime = time.strftime("%Y%m%d%H:%M:%S: ", time.localtime())
+                    if check:
+                        self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接成功")
+
+                        if self.stopBool:
+                            break
+
+                        if self.lanip != "":
+                            if self.getLinkState(self.lanip):
+                                self.sign_textBrowser.emit("LAN侧IP：" + self.lanip + " ping测正常")
+                            else:
+                                self.sign_textBrowser.emit("LAN侧IP：" + self.lanip + " ping测失败")
+                        if self.wanip != "":
+                            if self.getLinkState(self.wanip):
+                                self.sign_textBrowser.emit("WAN侧IP：" + self.wanip + " ping测正常")
+                            else:
+                                self.sign_textBrowser.emit("WAN侧IP：" + self.wanip + " ping测失败")
+                        time.sleep(5)
+                    else:
+                        self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接失败")
+                    print("SSID：" + ssid + " 断开连接")
+                    self.test_disconnect()
+                now = time.time()
                 count += 1
+                if int(self.polltime) > 0:
+                    self.sign_textBrowser.emit("下一次轮询，请等待" + self.polltime + "分钟")
+        self.sign_textBrowser.emit("WIFI测试完成")
 
 
     def stop(self):
+        self.sign_textBrowser.emit("WIFI测试正在停止")
         self.stopBool = True
 
     def test_connect(self, ssid, key):  # 测试链接
+        # self.wifiInt.remove_all_network_profiles()  # 删除所有的wifi文件
+        self.wifiInt.remove_network_profile(ssid)  # 删除wifi文件
 
         profile = pywifi.Profile()  # 创建wifi链接文件
         profile.ssid = ssid  # wifi名称
@@ -164,7 +243,7 @@ class WifiTestThread(QThread):
         profile.cipher = pywifi.const.CIPHER_TYPE_CCMP  # 加密单元
         profile.key = key  # 密码
 
-        self.wifiInt.remove_all_network_profiles()  # 删除所有的wifi文件
+
         tmp_profile = self.wifiInt.add_network_profile(profile)  # 设定新的链接文件
         self.wifiInt.connect(tmp_profile)  # 链接
         time.sleep(5)
@@ -172,19 +251,26 @@ class WifiTestThread(QThread):
             isOK = True
         else:
             isOK = False
-        self.wifiInt.disconnect()  # 断开
-        time.sleep(1)
-        # 检查断开状态
-        assert self.wifiInt.status() in \
-               [pywifi.const.IFACE_DISCONNECTED, pywifi.const.IFACE_INACTIVE]
-
+        print("isOK: " + str(isOK))
         return isOK
 
-    def getLinkState(ip):
+    def test_disconnect(self):
+        self.wifiInt.disconnect()  # 断开
+
+        # 检查断开状态
+        try:
+            assert self.wifiInt.status() in \
+                   [pywifi.const.IFACE_DISCONNECTED, pywifi.const.IFACE_INACTIVE]
+        except AssertionError as e:
+            print(e)
+
+    def getLinkState(self, ip):
         ping_True = False
         # 运行ping程序
         num = 0
         while num < 5:
+            if self.stopBool:
+                break
             time.sleep(1)
             p = subprocess.Popen("ping %s -w 100 -n 1" % (ip),
                                  stdin=subprocess.PIPE,

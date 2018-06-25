@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'F:\git\Wifi_Test_Long_term\Wifi_Test_Long_term.ui'
+# Form implementation generated from reading ui file 'D:\Github\Wifi_Test_Long_term\Wifi_Test_Long_term.ui'
 #
-# Created by: PyQt5 UI code generator 5.10
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,9 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
         mainWindow.setObjectName("mainWindow")
-        mainWindow.resize(501, 596)
-        mainWindow.setMinimumSize(QtCore.QSize(501, 0))
-        mainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        mainWindow.resize(535, 600)
+        mainWindow.setMinimumSize(QtCore.QSize(535, 600))
+        mainWindow.setMaximumSize(QtCore.QSize(535, 600))
         self.centralWidget = QtWidgets.QWidget(mainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralWidget)
@@ -81,6 +81,10 @@ class Ui_mainWindow(object):
         self.verticalLayout_3.addLayout(self.horizontalLayout_7)
         self.horizontalLayout_8 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
+        self.checkBox_lanip = QtWidgets.QCheckBox(self.centralWidget)
+        self.checkBox_lanip.setText("")
+        self.checkBox_lanip.setObjectName("checkBox_lanip")
+        self.horizontalLayout_8.addWidget(self.checkBox_lanip)
         self.label_5 = QtWidgets.QLabel(self.centralWidget)
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
@@ -89,12 +93,18 @@ class Ui_mainWindow(object):
         self.label_5.setObjectName("label_5")
         self.horizontalLayout_8.addWidget(self.label_5)
         self.lineEdit_lanip = QtWidgets.QLineEdit(self.centralWidget)
+        self.lineEdit_lanip.setEnabled(False)
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.lineEdit_lanip.setFont(font)
+        self.lineEdit_lanip.setText("")
         self.lineEdit_lanip.setObjectName("lineEdit_lanip")
         self.horizontalLayout_8.addWidget(self.lineEdit_lanip)
+        self.checkBox_wanip = QtWidgets.QCheckBox(self.centralWidget)
+        self.checkBox_wanip.setText("")
+        self.checkBox_wanip.setObjectName("checkBox_wanip")
+        self.horizontalLayout_8.addWidget(self.checkBox_wanip)
         self.label_6 = QtWidgets.QLabel(self.centralWidget)
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
@@ -103,10 +113,12 @@ class Ui_mainWindow(object):
         self.label_6.setObjectName("label_6")
         self.horizontalLayout_8.addWidget(self.label_6)
         self.lineEdit_wanip = QtWidgets.QLineEdit(self.centralWidget)
+        self.lineEdit_wanip.setEnabled(False)
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.lineEdit_wanip.setFont(font)
+        self.lineEdit_wanip.setText("")
         self.lineEdit_wanip.setObjectName("lineEdit_wanip")
         self.horizontalLayout_8.addWidget(self.lineEdit_wanip)
         self.verticalLayout_3.addLayout(self.horizontalLayout_8)
@@ -202,9 +214,7 @@ class Ui_mainWindow(object):
         self.label_3.setText(_translate("mainWindow", "轮询时间设置"))
         self.label_4.setText(_translate("mainWindow", "Ping测时长"))
         self.label_5.setText(_translate("mainWindow", "LAN侧IP地址"))
-        self.lineEdit_lanip.setText(_translate("mainWindow", "255.255.255.255"))
         self.label_6.setText(_translate("mainWindow", "WAN侧IP地址"))
-        self.lineEdit_wanip.setText(_translate("mainWindow", "255.255.255.255"))
         self.pushButton_start.setText(_translate("mainWindow", "开始"))
         self.pushButton_stop.setText(_translate("mainWindow", "停止"))
         self.pushButton_savelog.setText(_translate("mainWindow", "保存log"))
