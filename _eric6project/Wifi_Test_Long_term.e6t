@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-6.0.dtd">
 <!-- eric6 tasks file for project Wifi_Test_Long_term -->
-<!-- Saved: 2018-06-24, 02:06:37 -->
+<!-- Saved: 2018-06-25, 01:12:05 -->
 <Tasks version="6.0">
   <ProjectScanFilter></ProjectScanFilter>
-  <Task priority="1" completed="False" type="1" uid="{d342687c-9893-45f3-a48e-de6b593d470b}">
+  <Task priority="1" completed="False" type="1" uid="{89691f8e-b832-4cc6-808d-d84d8dc37987}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2018-06-24, 02:06:33</Created>
+    <Created>2018-06-25, 01:12:04</Created>
     <Resource>
       <Filename>Wifi_Test_Long_term.py</Filename>
       <Linenumber>81</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" type="1" uid="{d6105fd8-f4ac-4eed-903b-e7378221c6b6}">
+    <Summary>TODO: not implemented yet</Summary>
+    <Description></Description>
+    <Created>2018-06-25, 01:12:04</Created>
+    <Resource>
+      <Filename>Wifi_Test_Long_term.py</Filename>
+      <Linenumber>101</Linenumber>
     </Resource>
   </Task>
 </Tasks>

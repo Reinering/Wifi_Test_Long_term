@@ -8,7 +8,7 @@ from PyQt5.QtCore import pyqtSlot, QThread
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtWidgets, QtCore
-from queue import Queue
+# from queue import Queue
 import time
 import subprocess
 import pywifi
@@ -92,6 +92,22 @@ class mainWindow(QMainWindow, Ui_mainWindow):
 
     def setTextBrowser(self, check):
         self.textBrowser.append(check)
+    
+    @pyqtSlot()
+    def on_pushButton_savelog_clicked(self):
+        """
+        Slot documentation goes here.
+        """
+        # TODO: not implemented yet
+        dir = QtWidgets.QFileDialog.getSaveFileName(self, "选取文件夹", "config/", "Text Files (*.txt);;All Files (*)")
+        print(dir)
+        log = self.textBrowser.toPlainText()
+        print(log)
+        f = open(dir[0], "w+")
+        f.write(log)
+        f.close()
+
+
 
 
 class WifiTestThread(QThread):
@@ -124,10 +140,11 @@ class WifiTestThread(QThread):
                 for ssid in self.ssidList:
                     if not self.stopBool:
                         check = self.test_connect(ssid, self.key)
+                        logtime = time.strftime("%Y%s%d%H:%M:%S: ", time.localtime())
                         if check:
-                            self.sign_textBrowser.emit("SSID: " + ssid + " 第" + str(count + 1) + "次连接成功")
+                            self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接成功")
                         else:
-                            self.sign_textBrowser.emit("SSID: " + ssid + " 第" + str(count + 1) + "次连接失败")
+                            self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接失败")
 
 
                     else:

@@ -280,6 +280,24 @@
               </property>
              </spacer>
             </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_savelog">
+              <property name="maximumSize">
+               <size>
+                <width>52</width>
+                <height>27</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>保存log</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
