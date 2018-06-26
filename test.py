@@ -45,7 +45,7 @@ def getLinkState(ip):
         elif 'bytes=32' in out:
             print('bytes=32')
             ping_True = True
-            break
+            # break
         num += 1
     print(ping_True)
     return ping_True
@@ -62,6 +62,7 @@ assert wifiInt.status() in \
        [pywifi.const.IFACE_DISCONNECTED, pywifi.const.IFACE_INACTIVE]
 
 for ssid in ssidList:
+    print("SSID：" + ssid + "连接")
     profile = pywifi.Profile()  # 创建wifi链接文件
     profile.ssid = ssid # wifi名称
     profile.auth = pywifi.const.AUTH_ALG_OPEN  # 网卡的开放，
@@ -78,7 +79,8 @@ for ssid in ssidList:
         isOK = True
         if getLinkState("192.168.18.1"):
             print("Ping测成功")
-
+        else:
+            print("Ping测失败")
     else:
         isOK = False
     wifiInt.disconnect()  # 断开

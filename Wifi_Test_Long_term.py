@@ -43,6 +43,7 @@ class mainWindow(QMainWindow, Ui_mainWindow):
 
         self.listWidget_ssid.clear()
         ssidCount = len(self.ssidList)
+        tmpList = []
         for i in range(ssidCount):
             item = QtWidgets.QListWidgetItem()
             ssid = self.ssidList[i]
@@ -50,9 +51,10 @@ class mainWindow(QMainWindow, Ui_mainWindow):
                 continue
             if ssid[-1] == "\n":
                 ssid = ssid[:-1]
+                tmpList.append(ssid)
             item.setText(self._translate("mainWindow", ssid))
             self.listWidget_ssid.addItem(item)
-
+        self.ssidList = tmpList
 
 
 
@@ -180,6 +182,7 @@ class WifiTestThread(QThread):
 
 
     def run(self):
+        print(self.ssidList)
         self.sign_textBrowser.emit("WIFI测试开始：")
 
         wifi = pywifi.PyWiFi()
@@ -195,12 +198,27 @@ class WifiTestThread(QThread):
         while not self.stopBool:
             if time.time() >= now + int(self.polltime)*60*count:
                 for ssid in self.ssidList:
+
                     if self.stopBool:
                         break
                     print("开始连接SSID：" + ssid)
-                    check = self.test_connect(ssid, self.key)
+                    # check = self.test_connect(ssid, self.key)
+
+                    # self.wifiInt.remove_all_network_profiles()  # 删除所有的wifi文件
+                    self.wifiInt.remove_network_profile(ssid)  # 删除wifi文件
+                    profile = pywifi.Profile()  # 创建wifi链接文件
+                    profile.ssid = ssid  # wifi名称
+                    profile.auth = pywifi.const.AUTH_ALG_OPEN  # 网卡的开放，
+                    profile.akm.append(pywifi.const.AKM_TYPE_WPA2PSK)  # wifi加密算法
+                    profile.cipher = pywifi.const.CIPHER_TYPE_CCMP  # 加密单元
+                    profile.key = self.key  # 密码
+
+                    tmp_profile = self.wifiInt.add_network_profile(profile)  # 设定新的链接文件
+                    self.wifiInt.connect(tmp_profile)  # 链接
+                    time.sleep(10)
                     logtime = time.strftime("%Y%m%d%H:%M:%S: ", time.localtime())
-                    if check:
+                    if self.wifiInt.status() == pywifi.const.IFACE_CONNECTED:  # 判断是否连接上
+                        isOK = True
                         self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接成功")
 
                         if self.stopBool:
@@ -217,12 +235,24 @@ class WifiTestThread(QThread):
                             else:
                                 self.sign_textBrowser.emit("WAN侧IP：" + self.wanip + " ping测失败")
                         time.sleep(5)
+
                     else:
+                        isOK = False
                         self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接失败")
-                    print("SSID：" + ssid + " 断开连接")
-                    self.test_disconnect()
+                        print("SSID：" + ssid + " 断开连接")
+                    print("isOK: " + str(isOK))
+
+                    self.wifiInt.disconnect()  # 断开
+                    # 检查断开状态
+                    try:
+                        assert self.wifiInt.status() in \
+                               [pywifi.const.IFACE_DISCONNECTED, pywifi.const.IFACE_INACTIVE]
+                    except AssertionError as e:
+                        print(e)
+
                 now = time.time()
                 count += 1
+
                 if int(self.polltime) > 0:
                     self.sign_textBrowser.emit("下一次轮询，请等待" + self.polltime + "分钟")
         self.sign_textBrowser.emit("WIFI测试完成")
@@ -271,7 +301,7 @@ class WifiTestThread(QThread):
         while num < 5:
             if self.stopBool:
                 break
-            time.sleep(1)
+            # time.sleep(1)
             p = subprocess.Popen("ping %s -w 100 -n 1" % (ip),
                                  stdin=subprocess.PIPE,
                                  stdout=subprocess.PIPE,
@@ -303,7 +333,7 @@ class WifiTestThread(QThread):
             elif 'bytes=32' in out:
                 print('bytes=32')
                 ping_True = True
-                break
+                # break
             num += 1
         print(ping_True)
         return ping_True

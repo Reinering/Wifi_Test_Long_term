@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-6.0.dtd">
 <!-- eric6 tasks file for project Wifi_Test_Long_term -->
-<!-- Saved: 2018-06-25, 17:37:26 -->
+<!-- Saved: 2018-06-26, 15:51:22 -->
 <Tasks version="6.0">
   <ProjectScanFilter></ProjectScanFilter>
-  <Task priority="1" completed="False" type="1" uid="{369ad1c7-77ca-41d8-93c4-7c9866f040b9}">
+  <Task priority="1" completed="False" type="1" uid="{bebffa19-9286-43ea-9f9d-e770225bc584}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2018-06-25, 17:18:58</Created>
+    <Created>2018-06-26, 15:51:19</Created>
     <Resource>
       <Filename>Wifi_Test_Long_term.py</Filename>
       <Linenumber>97</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" type="1" uid="{438733f8-78f1-4ab6-91cf-b4a40d6c6963}">
+  <Task priority="1" completed="False" type="1" uid="{d66cec73-d99c-45e6-8e26-987b7c4ee48b}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2018-06-25, 17:18:58</Created>
+    <Created>2018-06-26, 15:51:19</Created>
     <Resource>
       <Filename>Wifi_Test_Long_term.py</Filename>
       <Linenumber>123</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" type="1" uid="{49f8fb87-a1f6-4269-86e8-722bf1b73dca}">
+  <Task priority="1" completed="False" type="1" uid="{f8c8cadb-a4ff-46a5-8b2e-fa722268bc0d}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2018-06-25, 17:18:58</Created>
+    <Created>2018-06-26, 15:51:19</Created>
     <Resource>
       <Filename>Wifi_Test_Long_term.py</Filename>
       <Linenumber>140</Linenumber>
     </Resource>
   </Task>
-  <Task priority="1" completed="False" type="1" uid="{33f94450-df71-40ec-8b34-65f67027847d}">
+  <Task priority="1" completed="False" type="1" uid="{9e97f893-4c23-4958-975a-190bbb4936a8}">
     <Summary>TODO: not implemented yet</Summary>
     <Description></Description>
-    <Created>2018-06-25, 17:18:58</Created>
+    <Created>2018-06-26, 15:51:19</Created>
     <Resource>
       <Filename>Wifi_Test_Long_term.py</Filename>
       <Linenumber>156</Linenumber>
