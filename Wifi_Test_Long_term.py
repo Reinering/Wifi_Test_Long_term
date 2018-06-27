@@ -5,7 +5,7 @@ Module implementing mainWindow.
 """
 
 from PyQt5.QtCore import pyqtSlot, QThread
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtWidgets, QtCore
 # from queue import Queue
@@ -36,27 +36,31 @@ class mainWindow(QMainWindow, Ui_mainWindow):
         self.updateSSIDList()
 
     def updateSSIDList(self):
-        f = open("config/ssid_list.txt", "r")
-        self.ssidList = f.readlines()
-        f.close()
-        print(self.ssidList)
+        f = None
+        try:
+            f = open("config/ssid_List.txt", "r")
+            self.ssidList = f.readlines()
+            print(self.ssidList)
+            self.listWidget_ssid.clear()
+            ssidCount = len(self.ssidList)
+            tmpList = []
+            for i in range(ssidCount):
+                item = QtWidgets.QListWidgetItem()
+                ssid = self.ssidList[i]
+                if ssid == "\n" or ssid == "":
+                    continue
+                if ssid[-1] == "\n":
+                    ssid = ssid[:-1]
+                    tmpList.append(ssid)
+                item.setText(self._translate("mainWindow", ssid))
+                self.listWidget_ssid.addItem(item)
+            self.ssidList = tmpList
+        except Exception as e:
+            warning = QMessageBox.warning(self, u"读取SSID列表文件失败", u"请确认 config/ssid_List.txt是否正确。")
+            print("保存log报错: %s", e)
 
-        self.listWidget_ssid.clear()
-        ssidCount = len(self.ssidList)
-        tmpList = []
-        for i in range(ssidCount):
-            item = QtWidgets.QListWidgetItem()
-            ssid = self.ssidList[i]
-            if ssid == "\n" or ssid == "":
-                continue
-            if ssid[-1] == "\n":
-                ssid = ssid[:-1]
-                tmpList.append(ssid)
-            item.setText(self._translate("mainWindow", ssid))
-            self.listWidget_ssid.addItem(item)
-        self.ssidList = tmpList
-
-
+        finally:
+            f.close()
 
     @pyqtSlot()
     def on_pushButton_start_clicked(self):
@@ -127,10 +131,19 @@ class mainWindow(QMainWindow, Ui_mainWindow):
         print(dir)
         log = self.textBrowser.toPlainText()
         print(log)
-        f = open(dir[0], "w+")
-        f.write(log)
-        f.close()
-    
+        if dir == "":
+            pass
+        else:
+            f = None
+            try:
+                f = open(dir[0], "w+")
+                f.write(log)
+
+            except Exception as e:
+                warning = QMessageBox.warning(self, u"保存文件出错", u"请重新保存。")
+                print("保存log报错: %s", e)
+            finally:
+                f.close()
     @pyqtSlot(bool)
     def on_checkBox_lanip_clicked(self, checked):
         """
@@ -216,7 +229,7 @@ class WifiTestThread(QThread):
                     tmp_profile = self.wifiInt.add_network_profile(profile)  # 设定新的链接文件
                     self.wifiInt.connect(tmp_profile)  # 链接
                     time.sleep(10)
-                    logtime = time.strftime("%Y%m%d%H:%M:%S: ", time.localtime())
+                    logtime = time.strftime("%Y%m%d %H:%M:%S: ", time.localtime())
                     if self.wifiInt.status() == pywifi.const.IFACE_CONNECTED:  # 判断是否连接上
                         isOK = True
                         self.sign_textBrowser.emit(logtime + "SSID: " + ssid + " 第" + str(count + 1) + "次连接成功")
@@ -250,13 +263,12 @@ class WifiTestThread(QThread):
                     except AssertionError as e:
                         print(e)
 
-                now = time.time()
                 count += 1
 
                 if int(self.polltime) > 0:
                     self.sign_textBrowser.emit("下一次轮询，请等待" + self.polltime + "分钟")
-        self.sign_textBrowser.emit("WIFI测试完成")
 
+        self.sign_textBrowser.emit("WIFI测试完成")
 
     def stop(self):
         self.sign_textBrowser.emit("WIFI测试正在停止")
